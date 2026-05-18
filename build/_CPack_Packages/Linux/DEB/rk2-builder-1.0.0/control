@@ -1,0 +1,9 @@
+Architecture: amd64
+Description: Builder pattern example with hamburgers
+Maintainer: Pavel Datskovskikh <pavel@example.com>
+Package: rk2-builder
+Priority: optional
+Section: devel
+Version: 1.0.0
+Installed-Size: 185
+

@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/hamburger.dir/src/hamburger.cpp.o -o hamburger 
