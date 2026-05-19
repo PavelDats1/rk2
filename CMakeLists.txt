@@ -4,11 +4,15 @@ project(RK2_Builder)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Основная программа
-add_executable(hamburger src/hamburger.cpp)
+# Основная программа (отдельный main.cpp)
+add_executable(hamburger src/main.cpp src/hamburger.cpp)
 
-# Тест (отдельный исполняемый файл)
+# Тест (отдельный test_hamburger.cpp)
 add_executable(test_hamburger test/test_hamburger.cpp)
+
+# Включить поддержку тестирования
+enable_testing()
+add_test(NAME HamburgerTest COMMAND test_hamburger)
 
 # CPack для deb-пакета
 set(CPACK_GENERATOR "DEB")

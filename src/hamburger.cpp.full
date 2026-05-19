@@ -2,7 +2,8 @@
 #include <memory>
 #include <string>
 #include <vector>
-
+#ifndef HAMBURGER_CPP
+#define HAMBURGER_CPP
 struct HamburgerIngredient { virtual ~HamburgerIngredient() = default; virtual std::string Name() const = 0; };
 
 struct Bread : public HamburgerIngredient { std::string Name() const override { return "Bread"; } };
@@ -149,3 +150,35 @@ public:
 private:
     std::unique_ptr<HamburgerBuilder> builder_;
 };
+
+/*
+    복합 객체의 생성 알고리즘과 합성되는 요소 객체들의 조립 방법이 독립적이고,
+        합성과정을 숨기고 싶고, 복잡한 객체를 단계적으로 생성하고 싶을 경우에,
+        Builder Pattern이 어울립니다.
+
+    복잡한 객체를 생성해야 할 때, Builder 패턴과 Abstract Factory 패턴은 어느정도 유사한 점이 있습니다.
+    만약, 생성과정(요소 객체들의 합성과정)들을 숨기고 싶고, 복잡한 객체가 완성된 후 반환되어야 하는 경우라면,
+        Builder Pattern 이 더 어울립니다.
+*/
+#ifndef TEST_MODE
+int main()
+{
+    HamburgerHouse macdoria(std::make_unique<BeefHamburgerBuilder>());
+
+    std::cout << "======== Beef Based Hamburger House ========" << std::endl;
+    std::cout << "* Let's make a cheese burger" << std::endl;
+    macdoria.MakeCheeseBurger().Print();
+    std::cout << "* Let's make a jumbo burger" << std::endl;
+    macdoria.MakeJumboBurger().Print();
+
+    macdoria.ChangeBuilder(std::make_unique<PorkHamburgerBuilder>());
+    std::cout << std::endl;
+    std::cout << "======== Pork Based Hamburger House ========" << std::endl;
+    std::cout << "* Let's make a cheese burger" << std::endl;
+    macdoria.MakeCheeseBurger().Print();
+    std::cout << "* Let's make a jumbo burger" << std::endl;
+    macdoria.MakeJumboBurger().Print();
+
+    return 0;
+}
+#endif
