@@ -3,6 +3,7 @@ name: Build and Release
 on:
   push:
     branches: [ main ]
+    tags: [ 'v*' ]          # <-- ДОБАВИТЬ ЭТО
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -23,17 +24,10 @@ jobs:
     - name: Build project
       run: cmake --build build
 
-    # ========== ТЕСТЫ ==========
-    - name: Run tests (ctest)
-      run: |
-        cd build
-        ctest --output-on-failure
-
-    - name: Run test executable directly
+    - name: Run tests
       run: ./build/test_hamburger
 
-    # ========== DEB ПАКЕТ ==========
-    - name: Create deb package with CPack
+    - name: Create deb package
       run: |
         cd build
         cpack -G DEB
@@ -44,7 +38,6 @@ jobs:
         name: rk2-builder-deb
         path: build/*.deb
 
-    # ========== RELEASE ==========
     - name: Create Release and upload deb
       if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
