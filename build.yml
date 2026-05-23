@@ -1,0 +1,58 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # нужно для создания тега и Release
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install dependencies
+      run: sudo apt update && sudo apt install -y cmake build-essential
+
+    - name: Configure CMake
+      run: cmake -B build -S .
+
+    - name: Build project
+      run: cmake --build build
+
+    - name: Run tests
+      run: ./build/test_hamburger
+
+    - name: Create deb package
+      run: |
+        cd build
+        cpack -G DEB
+
+    - name: Upload deb as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: rk2-builder-deb
+        path: build/*.deb
+
+    - name: Create timestamp tag
+      id: tag
+      run: |
+        TAG="release-$(date +'%Y%m%d-%H%M%S')"
+        echo "TAG=$TAG" >> $GITHUB_OUTPUT
+        git tag $TAG
+        git push origin $TAG
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.tag.outputs.TAG }}
+        files: build/*.deb
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
