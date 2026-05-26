@@ -12,10 +12,14 @@ add_executable(test_hamburger test/test_hamburger.cpp)
 enable_testing()
 add_test(NAME HamburgerTest COMMAND test_hamburger)
 
-# ========== КРОСС-ПЛАТФОРМЕННАЯ УСТАНОВКА ==========
+# ========== CPACK (создание пакетов) ==========
 set(CPACK_PACKAGE_NAME "rk2-builder")
 set(CPACK_PACKAGE_VERSION "1.0.0")
 set(CPACK_PACKAGE_DESCRIPTION "Builder pattern example with hamburgers")
+
+# ОБЯЗАТЕЛЬНО: указываем maintainer для deb-пакета
+set(CPACK_PACKAGE_CONTACT "Pavel Datskovskikh <pavel@example.com>")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Pavel Datskovskikh <pavel@example.com>")
 
 if(WIN32)
     # Windows
