@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  # ========== СБОРКА ДЛЯ LINUX ==========
+  # СБОРКА ДЛЯ LINUX
   build-linux:
     runs-on: ubuntu-latest
     permissions:
@@ -49,7 +49,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # ========== СБОРКА ДЛЯ WINDOWS ==========
+  #  СБОРКА ДЛЯ WINDOWS
   build-windows:
     runs-on: windows-latest
     permissions:
