@@ -9,7 +9,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  # ========== СБОРКА ДЛЯ LINUX ==========
+  build-linux:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -37,7 +38,7 @@ jobs:
     - name: Upload deb as artifact
       uses: actions/upload-artifact@v4
       with:
-        name: rk2-builder-deb
+        name: rk2-builder-linux
         path: build/*.deb
 
     - name: Create Release and upload deb
@@ -45,5 +46,47 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: build/*.deb
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ========== СБОРКА ДЛЯ WINDOWS ==========
+  build-windows:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+        refreshenv
+
+    - name: Configure CMake
+      run: cmake -B build -S .
+
+    - name: Build project
+      run: cmake --build build --config Release
+
+    - name: Run tests
+      run: ./build/Release/test_hamburger.exe
+
+    - name: Create Windows installer (NSIS)
+      run: |
+        cd build
+        cpack -G NSIS
+
+    - name: Upload Windows installer as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: rk2-builder-windows
+        path: build/*.exe
+
+    - name: Create Release and upload exe
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: build/*.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
